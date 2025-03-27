@@ -32,3 +32,6 @@ class Cell:
         if undo:
             fill_color = "red"
         self._window.draw_line(Line(self._center, to_cell._center), fill_color)
+
+    def __str__(self):
+        return f"Cell({self._upper_left}, {self._upper_right}, {self._lower_left}, {self._lower_right})"

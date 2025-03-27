@@ -6,4 +6,6 @@ class Line:
         canvas.create_line(self.p1.x, self.p1.y, self.p2.x, self.p2.y, 
                            fill=fill_color, width=2)
         
+    def __str__(self):
+        return f"Line({self.p1}, {self.p2})"
         
