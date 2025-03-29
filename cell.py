@@ -4,7 +4,7 @@ from point import Point
 class Cell:
     def __init__(self, window=None):
         self.has_left_wall = True
-        self.has_top_wall = True 
+        self.has_top_wall = True
         self.has_right_wall = True
         self.has_bottom_wall = True
         self._x1, self._x2, self._y1, self._y2 = None, None, None, None
@@ -22,6 +22,8 @@ class Cell:
         def draw_wall(has_wall, p1, p2):
             if has_wall:
                 self._window.draw_line(Line(p1, p2), fill_color)
+            else:
+                self._window.draw_line(Line(p1, p2), "#d9d9d9")
 
         draw_wall(self.has_left_wall, self._upper_left, self._lower_left)
         draw_wall(self.has_top_wall, self._upper_left, self._upper_right)
@@ -36,6 +38,10 @@ class Cell:
         if undo:
             fill_color = "red"
         self._window.draw_line(Line(self._center, to_cell._center), fill_color)
+
+    def walls(self):
+        """Returns a list of Booleans corresponding to the cell's walls, in this order: ["left", "top", "right", "bottom"]."""
+        return [self.has_left_wall, self.has_top_wall, self.has_right_wall, self.has_bottom_wall]
 
     def __str__(self):
         if not self._drawn:

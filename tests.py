@@ -30,5 +30,24 @@ class Test(unittest.TestCase):
                     case["expected_len_rows"],
                 )
 
+    def test_break_entrance_and_exit(self):
+        for case in self.test_cases:
+            with self.subTest(case["name"]):
+                m1 = Maze(*case["maze_args"])
+                entrance_cell = m1._cells[0][0]
+                exit_cell = m1._cells[-1][-1]
+                self.assertEqual(sum(entrance_cell.walls()), 4)
+                self.assertEqual(sum(entrance_cell.walls()), 4)
+
+                m1._break_entrance_and_exit()
+
+                self.assertEqual(sum(entrance_cell.walls()), 3)
+                self.assertTrue(not (entrance_cell.has_left_wall and
+                                     entrance_cell.has_top_wall))
+                self.assertEqual(sum(exit_cell.walls()), 3)
+                self.assertTrue(not (exit_cell.has_right_wall and
+                                     exit_cell.has_bottom_wall))
+
+
 if __name__ == "__main__":
     unittest.main()

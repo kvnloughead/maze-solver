@@ -1,4 +1,4 @@
-import time
+import time, random
 from cell import Cell
 
 class Maze:
@@ -32,6 +32,23 @@ class Maze:
         x2 = x1 + self._cell_size_x
         y2 = y1 + self._cell_size_y
         cell.draw(x1, y1, x2, y2)
+
+    def _break_entrance_and_exit(self):
+        choice = random.choice([0, 1])
+        entrance, exit = self._cells[0][0], self._cells[-1][-1]
+        if choice:
+            entrance.has_left_wall = False
+        else:
+            entrance.has_top_wall = False
+
+        choice = random.choice([0, 1])
+        if choice:
+            exit.has_right_wall = False
+        else:
+            exit.has_bottom_wall = False
+
+        self._draw_cell(0, 0, entrance)
+        self._draw_cell(self._num_cols - 1, self._num_rows - 1, exit)
 
     def _animate(self):
         if self._win == None:
