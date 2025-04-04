@@ -10,12 +10,13 @@ class Cell:
         self._x1, self._x2, self._y1, self._y2 = None, None, None, None
         self._drawn = False
         self._window = window
+        self.visited = False
 
     def draw(self, x1, y1, x2, y2, fill_color="black"):
         self._upper_left = Point(x1, y1)
-        self._upper_right = Point(x1, y2)
+        self._upper_right = Point(x2, y1)
         self._lower_right = Point(x2, y2)
-        self._lower_left = Point(x2, y1)
+        self._lower_left = Point(x1, y2)
         self._center = Point(min(x1, x2) + abs((x1 - x2) / 2),
                              min(x1, x2) + abs((y1 - y2) / 2))
 
@@ -23,7 +24,7 @@ class Cell:
             if has_wall:
                 self._window.draw_line(Line(p1, p2), fill_color)
             else:
-                self._window.draw_line(Line(p1, p2), "#d9d9d9")
+                self._window.draw_line(Line(p1, p2), "#323232")
 
         draw_wall(self.has_left_wall, self._upper_left, self._lower_left)
         draw_wall(self.has_top_wall, self._upper_left, self._upper_right)
@@ -40,8 +41,8 @@ class Cell:
         self._window.draw_line(Line(self._center, to_cell._center), fill_color)
 
     def walls(self):
-        """Returns a list of Booleans corresponding to the cell's walls, in this order: ["left", "top", "right", "bottom"]."""
-        return [self.has_left_wall, self.has_top_wall, self.has_right_wall, self.has_bottom_wall]
+        """Returns a list of Booleans corresponding to the cell's walls, in this order: ["top", "right", "bottom", "left"]."""
+        return [self.has_top_wall, self.has_right_wall, self.has_bottom_wall, self.has_left_wall]
 
     def __str__(self):
         if not self._drawn:
