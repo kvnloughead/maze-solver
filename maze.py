@@ -16,6 +16,7 @@ class Maze:
     def create_maze(self):
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         self._cells = []
@@ -123,6 +124,12 @@ class Maze:
                 raise ValueError(f"Cells {cell_1} and {cell_2} are not adjacent.")
         self._draw_cell(coords_1[0], coords_1[1], cell_1)
         self._draw_cell(coords_2[0], coords_2[1], cell_2)
+
+    def _reset_cells_visited(self):
+        """Resets visited status of all cells."""
+        for row in self._cells:
+            for cell in row:
+                cell.visited = False
 
     def _animate(self):
         if self._win == None:

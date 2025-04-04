@@ -48,6 +48,14 @@ class Test(unittest.TestCase):
                 self.assertTrue(not (exit_cell.has_right_wall and
                                      exit_cell.has_bottom_wall))
 
+    def test_reset_cells_visited(self):
+        for case in self.test_cases:
+            with self.subTest(case["name"]):
+                m1 = Maze(*case["maze_args"])
+                m1.create_maze()
+                cells_visited = map(lambda cell: cell.visited, m1._cells)
+                self.assertTrue(cells_visited)
+
 
 if __name__ == "__main__":
     unittest.main()
