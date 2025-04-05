@@ -87,43 +87,33 @@ class Maze:
 
     def _remove_adjacent_walls(self, curr_cell, i, j, next_cell, move):
         """Removes the wall between curr_cell and next_cell based on the direction."""
-        if True or curr_cell == self._cells[0][0]:
-            n_i, n_j, direction = move
-            if direction == "left":
-                curr_cell.has_left_wall = False
-                next_cell.has_right_wall = False
-            elif direction == "right":
-                curr_cell.has_right_wall = False
-                next_cell.has_left_wall = False
-            elif direction == "top":
-                curr_cell.has_top_wall = False
-                next_cell.has_bottom_wall = False
-            elif direction == "bottom":
-                curr_cell.has_bottom_wall = False
-                next_cell.has_top_wall = False
-            self._draw_cell(i, j, curr_cell)
-            self._draw_cell(n_i, n_j, next_cell)
+        n_i, n_j, direction = move
+        if direction == "left":
+            curr_cell.has_left_wall = False
+            next_cell.has_right_wall = False
+        elif direction == "right":
+            curr_cell.has_right_wall = False
+            next_cell.has_left_wall = False
+        elif direction == "top":
+            curr_cell.has_top_wall = False
+            next_cell.has_bottom_wall = False
+        elif direction == "bottom":
+            curr_cell.has_bottom_wall = False
+            next_cell.has_top_wall = False
+        self._draw_cell(i, j, curr_cell)
+        self._draw_cell(n_i, n_j, next_cell)
 
-    def _remove_adjacent_sides(self, coords_1, coords_2, cell_1, cell_2):
-        """Removes or adds the adjacent side between the cells. Cells must be tuples (i, j) representing their position in self._cells."""
-        diff = (coords_1[0] - coords_2[0], coords_1[1] - coords_2[1])
-        match diff:
-            case (1, 0):
-                cell_1.has_bottom_wall = False
-                cell_2.has_top_wall = False
-            case (0, 1):
-                cell_1.has_left_wall = False
-                cell_2.has_right_wall = False
-            case (-1, 0):
-                cell_1.has_top_wall = False
-                cell_2.has_bottom_wall = False
-            case (0, -1):
-                cell_1.has_right_wall = False
-                cell_2.has_left_wall = False
-            case _:
-                raise ValueError(f"Cells {cell_1} and {cell_2} are not adjacent.")
-        self._draw_cell(coords_1[0], coords_1[1], cell_1)
-        self._draw_cell(coords_2[0], coords_2[1], cell_2)
+    def _have_adjacent_walls(self, curr_cell, next_cell, direction):
+        """Checks if the current cell and next cell have walls between them."""
+        if direction == "left":
+            return curr_cell.has_left_wall and next_cell.has_right_wall
+        elif direction == "right":
+            return curr_cell.has_right_wall and next_cell.has_left_wall
+        elif direction == "top":
+            return curr_cell.has_top_wall and next_cell.has_bottom_wall
+        elif direction == "bottom":
+            return curr_cell.has_bottom_wall and next_cell.has_top_wall
+        return False
 
     def _reset_cells_visited(self):
         """Resets visited status of all cells."""
@@ -136,3 +126,37 @@ class Maze:
             return
         self._win.redraw()
         time.sleep(0.05)
+
+    def solve(self):
+        self._solve_r(0, 0)
+
+    def _solve_r(self, i, j):
+        curr_cell = self._cells[i][j]
+        curr_cell.visited = True
+
+        # Define possible moves (grid indices and corresponding directions)
+        neighbors = [
+            (i, j+1, "right"),  # Move right
+            (i+1, j, "bottom"), # Move down
+            (i, j-1, "left"),   # Move left
+            (i-1, j, "top")     # Move up
+        ]
+
+        for n_i, n_j, direction in neighbors:
+            if n_i < 0 or n_j < 0 or n_i >= self._num_cols or n_j >= self._num_rows:
+                continue
+
+            next_cell = self._cells[n_i][n_j]
+            
+            # Check if the move is valid (i.e., no wall between cells)
+            if not next_cell.visited and not self._have_adjacent_walls(curr_cell, next_cell, direction):
+                curr_cell.draw_move(next_cell, fill_color="white")
+                self._solve_r(n_i, n_j)
+                
+    def __str__(self):
+        # Print self._cells in a readable format
+        cell_strs = []
+        for row in self._cells:
+            cell_strs.append(" | ".join(str(cell) for cell in row))
+        return "\n".join(cell_strs)
+        

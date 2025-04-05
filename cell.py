@@ -17,8 +17,7 @@ class Cell:
         self._upper_right = Point(x2, y1)
         self._lower_right = Point(x2, y2)
         self._lower_left = Point(x1, y2)
-        self._center = Point(min(x1, x2) + abs((x1 - x2) / 2),
-                             min(x1, x2) + abs((y1 - y2) / 2))
+        self._center = Point((x1 + x2) / 2, (y1 + y2) / 2)
 
         def draw_wall(has_wall, p1, p2):
             if has_wall:
@@ -33,7 +32,7 @@ class Cell:
         self._drawn = True
 
     def draw_move(self, to_cell, undo=False, fill_color="grey"):
-        """Draws a path from the center of the current cell to the center of to_cell. Most not be called until the cell has been drawn."""
+        """Draws a path from the center of the current cell to the center of to_cell. Must not be called until the cell has been drawn."""
         if not self._drawn or not to_cell._drawn:
             raise Exception("Can't draw a move if either cell is not drawn")
         if undo:
@@ -48,4 +47,4 @@ class Cell:
         if not self._drawn:
             return "Cell()"
         else:
-            return f"Cell({self._upper_left}, {self._upper_right}, {self._lower_left}, {self._lower_right})"
+            return f"Cell({self._upper_left}, {self._upper_right}, {self._lower_right}, {self._lower_left})"
