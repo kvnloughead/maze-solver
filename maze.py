@@ -16,15 +16,13 @@ class Maze:
     def create_maze(self):
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._draw_cells()
         self._reset_cells_visited()
 
     def _create_cells(self):
         self._cells = []
-        for i in range(self._num_cols):
-            self._cells.append([Cell(self._win) for i in range(self._num_rows)])
-        for i, row in enumerate(self._cells):
-            for j, cell in enumerate(row):
-                self._draw_cell(i, j, cell)
+        for _ in range(self._num_cols):
+            self._cells.append([Cell(self._win) for _ in range(self._num_rows)])
 
     def _draw_cell(self, i, j, cell):
         """Draws cell (i, j). The origin of the maze is (self._x1, self._y1).
@@ -37,6 +35,11 @@ class Maze:
         x2 = x1 + self._cell_size_x
         y2 = y1 + self._cell_size_y
         cell.draw(x1, y1, x2, y2)
+
+    def _draw_cells(self):
+        for i, row in enumerate(self._cells):
+            for j, cell in enumerate(row):
+                self._draw_cell(i, j, cell)
 
     def _break_entrance_and_exit(self):
         choice = random.choice([0, 1])
@@ -51,9 +54,6 @@ class Maze:
             exit.has_right_wall = False
         else:
             exit.has_bottom_wall = False
-
-        self._draw_cell(0, 0, entrance)
-        self._draw_cell(self._num_cols - 1, self._num_rows - 1, exit)
 
     def _break_walls_r(self, i, j):
         curr_cell = self._cells[i][j]
@@ -100,8 +100,6 @@ class Maze:
         elif direction == "bottom":
             curr_cell.has_bottom_wall = False
             next_cell.has_top_wall = False
-        self._draw_cell(i, j, curr_cell)
-        self._draw_cell(n_i, n_j, next_cell)
 
     def _have_adjacent_walls(self, curr_cell, next_cell, direction):
         """Checks if the current cell and next cell have walls between them."""

@@ -22,8 +22,6 @@ class Cell:
         def draw_wall(has_wall, p1, p2):
             if has_wall:
                 self._window.draw_line(Line(p1, p2), fill_color)
-            else:
-                self._window.draw_line(Line(p1, p2), "#323232")
 
         draw_wall(self.has_left_wall, self._upper_left, self._lower_left)
         draw_wall(self.has_top_wall, self._upper_left, self._upper_right)
