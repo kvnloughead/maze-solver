@@ -41,6 +41,12 @@ class Cell:
         """Returns a list of Booleans corresponding to the cell's walls, in this order: ["top", "right", "bottom", "left"]."""
         return [self.has_top_wall, self.has_right_wall, self.has_bottom_wall, self.has_left_wall]
 
+    def no_walls(self):
+        self.has_left_wall = False
+        self.has_top_wall = False
+        self.has_right_wall = False
+        self.has_bottom_wall = False
+
     def __str__(self):
         if not self._drawn:
             return "Cell()"

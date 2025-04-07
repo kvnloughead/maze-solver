@@ -28,3 +28,6 @@ class Window:
 
     def draw_line(self, line, fill_color="black"):
         line.draw(self._canvas, fill_color)
+
+    def write(self, x, y, text):
+        self._canvas.create_text(x, y, text=text)

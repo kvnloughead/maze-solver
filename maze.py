@@ -11,7 +11,27 @@ class Maze:
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._win = window
+        self._won_game = False
         self._create_cells()
+
+    def _end_game(self, won=True, text="You win!"):
+        win_cell = Cell(self._win)
+        win_cell.no_walls()
+        x1 = self._x1 + self._num_rows * self._cell_size_x
+        y1 = self._y1 + self._num_cols * self._cell_size_y
+        if self._exit_wall == "right":
+            y1 -= self._cell_size_y
+        else:
+            x1 -= self._cell_size_x
+
+        if won:
+            win_cell.draw(x1, y1, x1+self._cell_size_x, y1+self._cell_size_y)
+            self._cells[-1][-1].draw_move(win_cell)
+            self._won_game = True
+
+        if not won:
+            text="You lose!"
+        self._win.write(x1 + 4 * self._cell_size_x, y1, text=text)
 
     def create_maze(self):
         self._break_entrance_and_exit()
@@ -51,8 +71,10 @@ class Maze:
 
         choice = random.choice([0, 1])
         if choice:
+            self._exit_wall = "right"
             exit.has_right_wall = False
         else:
+            self._exit_wall = "bottom"
             exit.has_bottom_wall = False
 
     def _break_walls_r(self, i, j):
@@ -87,7 +109,7 @@ class Maze:
 
     def _remove_adjacent_walls(self, curr_cell, i, j, next_cell, move):
         """Removes the wall between curr_cell and next_cell based on the direction."""
-        n_i, n_j, direction = move
+        _, _, direction = move
         if direction == "left":
             curr_cell.has_left_wall = False
             next_cell.has_right_wall = False
@@ -127,10 +149,22 @@ class Maze:
 
     def solve(self):
         self._solve_r(0, 0)
+        if not self._won_game:
+            self._end_game(won=False)
 
-    def _solve_r(self, i, j):
+    def _solve_r(self, i, j, prev_cell=None):
+        if self._won_game:
+            return
+
         curr_cell = self._cells[i][j]
         curr_cell.visited = True
+        if prev_cell:
+            curr_cell.draw_move(prev_cell, fill_color="green")
+        self._animate()
+
+        if self._cells[i][j] == self._cells[-1][-1]:
+            self._end_game(won=True)
+            return True
 
         # Define possible moves (grid indices and corresponding directions)
         neighbors = [
@@ -148,8 +182,7 @@ class Maze:
             
             # Check if the move is valid (i.e., no wall between cells)
             if not next_cell.visited and not self._have_adjacent_walls(curr_cell, next_cell, direction):
-                curr_cell.draw_move(next_cell, fill_color="white")
-                self._solve_r(n_i, n_j)
+                self._solve_r(n_i, n_j, curr_cell)
                 
     def __str__(self):
         # Print self._cells in a readable format
